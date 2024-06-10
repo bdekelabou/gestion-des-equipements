@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Probleme extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'description',
+        'etapes_id',
+    ];
+
+    public function etapes()
+    {
+        return $this->belongsTo(Etape::class, 'etapes_id');
+    }
 }

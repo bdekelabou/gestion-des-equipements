@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TextInput;
 
 class EtapeResource extends Resource
 {
@@ -23,7 +24,9 @@ class EtapeResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('libelle')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -31,13 +34,15 @@ class EtapeResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('libelle'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

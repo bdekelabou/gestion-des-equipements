@@ -23,7 +23,9 @@ class RoleResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('libelle')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -31,7 +33,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('libelle'),
             ])
             ->filters([
                 //

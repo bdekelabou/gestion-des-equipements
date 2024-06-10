@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class BureauPoste extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'nom',
+    ];
+
+    public function equipements()
+    {
+        return $this->hasMany(Equipement::class, 'bureau_postes_id');
+    }
 }

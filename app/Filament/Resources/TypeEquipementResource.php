@@ -23,15 +23,19 @@ class TypeEquipementResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('libelle')
+                ->required()
+                ->maxLength(255),
+                
             ]);
     }
 
+    
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('libelle'),
             ])
             ->filters([
                 //

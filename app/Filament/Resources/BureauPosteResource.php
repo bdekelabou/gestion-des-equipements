@@ -23,7 +23,9 @@ class BureauPosteResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('nom')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -31,13 +33,15 @@ class BureauPosteResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('nom'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

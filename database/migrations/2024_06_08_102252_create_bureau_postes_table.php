@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bureau_postes', function (Blueprint $table) {
-            $table->id();
-            $table->string("nom");
+            $table->id(); // Équivalent à $table->bigIncrements('id');
+            $table->string('nom');
             $table->timestamps();
         });
     }

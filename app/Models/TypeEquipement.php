@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class TypeEquipement extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'libelle',
+    ];
+
+    public function equipements()
+    {
+        return $this->hasMany(Equipement::class, 'type_equipements_id');
+    }
 }
