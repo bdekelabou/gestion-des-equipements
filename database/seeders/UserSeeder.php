@@ -17,9 +17,8 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Admin',
             'email' => 'ange@test.com',
-            'poste' => 'administrateur',
             'password' => Hash::make('1234'),
-            //'bureauPoste_id'=> null
+            'bureau_poste_id'=> 1
         ]);
     }
 }

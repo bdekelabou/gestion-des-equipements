@@ -11,9 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('problemes', function (Blueprint $table) {
+        Schema::create('demande_probleme', function (Blueprint $table) {
             $table->id();
-            $table->text("description");
+            $table->foreignId('demande_id');
+            $table->foreignId('probleme_id');
+            $table->enum('etat',
+             ['en attente',
+              'en cours', 
+              'resolu']);
             $table->timestamps();
         });
     }
@@ -23,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('problemes');
+        Schema::dropIfExists('demande_probleme');
     }
 };

@@ -28,9 +28,7 @@ class ProblemeResource extends Resource
                 Forms\Components\TextInput::make('description')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Select::make('etapes_id')
-                    ->relationship('etapes', 'libelle')
-                    ->required(),
+               
             ]);
     }
 

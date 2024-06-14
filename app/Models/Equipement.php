@@ -10,8 +10,9 @@ class Equipement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'type_equipements_id',
-        'bureau_postes_id',
+        'type_equipement_id',
+        'bureau_poste_id',
+        "libelle"
     ];
 
     public function typeEquipement()

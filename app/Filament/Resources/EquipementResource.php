@@ -28,11 +28,16 @@ class EquipementResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('type_equipements_id')
+
+                Forms\Components\TextInput::make('libelle')
+                    ->label('Libelle de l\'équipement')
+                    ->required(),
+
+                Forms\Components\Select::make('type_equipement_id')
                     ->label('Type Equipement')
                     ->options(TypeEquipement::pluck('libelle', 'id'))
                     ->required(),
-                Forms\Components\Select::make('bureau_postes_id')
+                Forms\Components\Select::make('bureau_poste_id')
                     ->label('Bureau de poste')
                     ->options(BureauPoste::pluck('nom', 'id'))
                     ->required(),
