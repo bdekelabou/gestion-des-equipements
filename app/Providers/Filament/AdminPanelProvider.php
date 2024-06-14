@@ -53,6 +53,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->plugins([
+                \Phpsa\FilamentAuthentication\FilamentAuthentication::make(),
             ]);
     }
 }

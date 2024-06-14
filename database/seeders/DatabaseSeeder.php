@@ -4,10 +4,11 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\Equipement;
 use App\Models\Probleme;
+use App\Models\Equipement;
 use App\Models\TypeEquipement;
 use Illuminate\Database\Seeder;
+use Database\Seeders\RolesPermissionsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -33,6 +34,8 @@ class DatabaseSeeder extends Seeder
             EquipementSeeder::class,
 
             ProblemeSeeder::class,
+
+             RolesPermissionsSeeder::class,
 
           
         ]);

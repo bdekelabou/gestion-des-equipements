@@ -6,22 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create(config('filament-authentication.password_renew.table_name'), function (Blueprint $table) {
             $table->id();
+            $table->morphs('renewable');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists(config('filament-authentication.password_renew.table_name'));
     }
 };
