@@ -38,6 +38,7 @@ class ListDemandes extends ListRecords
 
         return static::getResource()::getEloquentQuery()
         ->join("equipements", "equipements.id", "=", "demandes.equipement_id")
+        // ->leftjoin("users", "users.id", "=", "demandes.assigned_to")
         ->join("bureau_postes", "bureau_postes.id", "=", "equipements.bureau_poste_id")
         ->select("demandes.*", "equipements.libelle as libelle", "bureau_postes.nom as bureau_poste");
     }

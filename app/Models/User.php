@@ -45,4 +45,16 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function scopeWithRole($query, $role)
+    {
+        return $query->whereHas('roles', function ($query) use ($role) {
+            $query->where('name', $role);
+        });
+    }
+
+    public function demandes()
+    {
+        return $this->hasMany(Demande::class);
+    }
 }

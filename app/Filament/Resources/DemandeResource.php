@@ -3,28 +3,30 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Demande;
 use Filament\Forms\Form;
 use App\Enums\RolesEnums;
 use App\Enums\EtapesEnums;
 use App\Models\Equipement;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Table;
 use App\Models\BureauPoste;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
+use Filament\Forms\Components\Grid;
+use Filament\Tables\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
+use Filament\Tables\Columns\TagsColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\ButtonAction;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\DemandeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\DemandeResource\RelationManagers;
@@ -84,6 +86,26 @@ class DemandeResource extends Resource
                             ->relationship("problemes", "description")
                             ->preload()
                             ->multiple(),
+                        
+                        // Select::make('agent_traitant_id')
+                        //     ->label('Agent traitant')
+                        //     ->searchable()
+                        //     ->options(fn() => \App\Models\User::whereHas('roles', function (Builder $query) {
+                        //         $query->where('name', RolesEnums::Inormaticien()->value);
+                        //     })->pluck('name', 'id'))
+                        //     ->required()
+                        //     ->native(false)
+                        //     ->reactive()
+                        //     ->disabled(fn() => auth()->user()->hasRole(RolesEnums::Inormaticien()->value) ? true : false)
+                        //     ->dehydrated(false)
+                        //     ->default(function () {
+
+                        //         $user = auth()->user();
+
+                        //         if ($user->hasRole(RolesEnums::Inormaticien()->value)) {
+                        //             return auth()->user()->id;
+                        //         }
+                        //     }),
                     ]),
 
 
@@ -140,7 +162,7 @@ class DemandeResource extends Resource
                 TextColumn::make("date_traitement")
                     ->label("Date de réception (CI)")
                     ->badge()
-                    ->color(Color::Green)
+                    ->color(Color::Gray)
                     ->placeholder("-")
                     ->date("d-m-Y"),
 
@@ -156,8 +178,14 @@ class DemandeResource extends Resource
                     ->badge()
                     ->color(Color::Blue)
                     ->placeholder("-")
-                    ->date("d-m-Y")
+                    ->date("d-m-Y"),
 
+                TextColumn::make("assigned_to")
+                    ->label("Agent traitant")
+                    ->badge()
+                    ->color(Color::Teal)
+                    ->placeholder("-")
+                    ->formatStateUsing(fn($state) => User::find($state)->name),
 
             ])
             ->filters([
@@ -165,12 +193,14 @@ class DemandeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
+                    ->label("modifier")
                     ->visible(function ($record) {
 
                         if (
                             in_array($record->etape, [
                                 $record->etape == EtapesEnums::Cloture()->value,
-                                $record->etape == EtapesEnums::Equipement_renvoye()->value
+                                $record->etape == EtapesEnums::Equipement_renvoye()->value,
+                                $record->etape == EtapesEnums::Equipement_receptionne()->value
                             ])
                         ) {
                             return false;
@@ -301,8 +331,49 @@ class DemandeResource extends Resource
                             ->color(Color::Green)
                             ->icon("heroicon-o-bell-alert")
                             ->send();
-                    })
-            ])
+                    }),
+
+                    Action::make('Assignation')
+                        ->label('Assigner')
+                        ->icon('heroicon-o-user-group')
+                        ->color(Color::Blue)
+                        ->action(function ($record, $data) {
+
+                            $record->update([
+                                'assigned_to' => $data['user_id'],
+                                'etape' => EtapesEnums::Equipement_traite()->value,
+                            ]);
+                        })
+                        ->color(Color::Blue)
+                        ->form([ Select::make('user_id')
+                                ->label('Assigner à un informaticien')
+                                ->options(User::withRole(RolesEnums::inormaticien()->value)->pluck('name', 'id'))
+                                ->required(),
+                    ]) 
+                    ->visible(function ($record) {
+
+                        $recordState = $record->etape;
+
+                        $user = auth()->user();
+
+                        $allowEditStates = [
+                            EtapesEnums::Equipement_envoye()->value,
+                            // EtapesEnums::Equipement_receptionne()->value,
+                            // EtapesEnums::Equipement_traite()->value,
+                        ];
+
+                        if ($user->hasRole(RolesEnums::Inormaticien()->value)) {
+
+                            if (in_array($recordState, $allowEditStates)) {
+                                return true;
+                            }
+                            return false;
+                        }
+                        return false;
+
+                    }),
+                    
+                 ])
             ->bulkActions([
                     Tables\Actions\BulkActionGroup::make([
                         Tables\Actions\DeleteBulkAction::make(),

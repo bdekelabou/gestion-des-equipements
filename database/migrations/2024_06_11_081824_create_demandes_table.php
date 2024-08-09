@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('demandes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("equipement_id");
+            // $table->foreignId('user_id')->constrained()->nullable()->onDelete('set null');
             $table->text("details")->nullable();
             $table->date("date_renvoi")->nullable();
             $table->date("date_reception")->nullable();
